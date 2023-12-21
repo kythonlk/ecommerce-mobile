@@ -5,6 +5,7 @@ export async function fetchProducts(): Promise<Product[]> {
   const url = new URL(`${Url}/products`);
   url.searchParams.append('consumer_key', Key);
   url.searchParams.append('consumer_secret', Secret);
+  url.searchParams.append('per_page', '50');
 
   try {
     const response = await fetch(url.toString());
@@ -12,20 +13,23 @@ export async function fetchProducts(): Promise<Product[]> {
       throw new Error('Failed to fetch products.');
     }
     const data = await response.json();
-    return data.map(item => ({
-      id: item.id,
-      product_name: item.name,
-      product_category: item.categories.map(cat => cat.name).join(', '),
-      product_description: item.description,
-      product_price: item.price,
-      product_stock: item.stock_quantity,
-      product_image: item.images[0]?.src || ''
-    }));
+    return data
+      .filter(item => item.price && item.price !== '')
+      .map(item => ({
+        id: item.id,
+        product_name: item.name,
+        product_category: item.categories.map(cat => cat.name).join(', '),
+        product_description: item.description,
+        product_price: item.price,
+        product_stock: item.stock_quantity,
+        product_image: item.images[0]?.src || ''
+      }));
   } catch (error) {
     console.error('Error fetching products:', error);
     return [];
   }
 }
+
 
 export async function fetchProductDetails(productId: number): Promise<Product | null> {
   const { Url, Key, Secret } = getWoocommerceApiConfig();
@@ -44,7 +48,7 @@ export async function fetchProductDetails(productId: number): Promise<Product | 
       product_name: item.name,
       product_category: item.categories.map(cat => cat.name).join(', '),
       product_description: item.description,
-      product_price: item.price,
+      product_price: item.price_html,
       product_stock: item.stock_quantity,
       product_image: item.images[0]?.src || ''
     };
@@ -53,23 +57,3 @@ export async function fetchProductDetails(productId: number): Promise<Product | 
     return null;
   }
 }
-
-// export async function createOrder(orderData: CreateOrder): Promise<Order | null> {
-//   try {
-//     const response = await fetch(`${API_URL}/orders`, {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify(orderData),
-//     });
-
-//     if (!response.ok) {
-//       throw new Error('Failed to fetch order details.');
-//     }
-//     return await response.json();
-//   } catch (error) {
-//     console.error('Error fetching order details:', error);
-//     return null;
-//   }
-// }

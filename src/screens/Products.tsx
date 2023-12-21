@@ -20,11 +20,16 @@ const Products = ({ navigation }: ProductsPageProps) => {
     loadProducts();
   }, []);
 
+  // Helper function to truncate text
+  const truncateText = (text, maxLength) => {
+    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+  };
+
   const renderProductItem = ({ item }) => (
     <TouchableOpacity style={styles.productItem} onPress={() => navigation.navigate('ProductDetails', { id: item.id })}>
       <Image style={styles.productImage} source={{ uri: item.product_image }} />
-      <Text style={styles.productName}>{item.product_name}</Text>
-      <Text style={styles.productPrice}>${item.product_price}</Text>
+      <Text style={styles.productName}>{truncateText(item.product_name, 20)}</Text>
+      <Text style={styles.productPrice}>AED{item.product_price}</Text>
     </TouchableOpacity>
   );
 
@@ -34,6 +39,7 @@ const Products = ({ navigation }: ProductsPageProps) => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -60,7 +66,7 @@ const styles = StyleSheet.create({
   productPrice: {
     marginTop: 4,
     fontSize: 14,
-    color: '#666',
+    color: 'black',
   },
 });
 
