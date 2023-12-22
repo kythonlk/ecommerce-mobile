@@ -5,7 +5,7 @@ export async function fetchProducts(): Promise<Product[]> {
   const url = new URL(`${Url}/products`);
   url.searchParams.append('consumer_key', Key);
   url.searchParams.append('consumer_secret', Secret);
-  url.searchParams.append('per_page', '50');
+  url.searchParams.append('per_page', '60');
 
   try {
     const response = await fetch(url.toString());
@@ -48,12 +48,35 @@ export async function fetchProductDetails(productId: number): Promise<Product | 
       product_name: item.name,
       product_category: item.categories.map(cat => cat.name).join(', '),
       product_description: item.description,
-      product_price: item.price_html,
+      product_price: item.price,
       product_stock: item.stock_quantity,
       product_image: item.images[0]?.src || ''
     };
   } catch (error) {
     console.error('Error fetching product details:', error);
     return null;
+  }
+}
+
+
+export async function fetchCategories(): Promise<Category[]> {
+  const { Url, Key, Secret } = getWoocommerceApiConfig();
+  const url = new URL(`${Url}/products/categories`);
+  url.searchParams.append('consumer_key', Key);
+  url.searchParams.append('consumer_secret', Secret);
+
+  try {
+    const response = await fetch(url.toString());
+    if (!response.ok) {
+      throw new Error('Failed to fetch categories.');
+    }
+    const data = await response.json();
+    return data.map(category => ({
+      id: category.id,
+      name: category.name,
+    }));
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    return [];
   }
 }

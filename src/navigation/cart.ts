@@ -2,7 +2,6 @@ import { create } from 'zustand';
 import { Product } from '../api/api';
 
 export interface CartState {
-  // Products with additional quantity property
   products: Array<Product & { quantity: number }>;
   addProduct: (product: Product) => void;
   reduceProduct: (product: Product) => void;

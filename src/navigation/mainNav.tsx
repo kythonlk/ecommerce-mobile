@@ -6,6 +6,8 @@ import React, { useEffect, useState } from 'react';
 import useCartStore from './cart';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import CartModal from '../screens/CartModal';
+import Catogeries from '../components/Categories';
+import Icon from 'react-native-vector-icons/AntDesign';
 
 type ProductsStackParamList = {
   Products: undefined;
@@ -39,6 +41,7 @@ const CartButton = () => {
       <View style={styles.countContainer}>
         <Text style={styles.countText}>{count}</Text>
       </View>
+      <Icon size={24} style={{color : 'black'}} name="shoppingcart" />
     </TouchableOpacity>
   );
 };
@@ -55,6 +58,7 @@ const ProductsStackNav = () => {
       }}>
       <ProductsStack.Screen name="Products" component={Products} options={{ headerTitle: 'Dhabione' }} />
       <ProductsStack.Screen name="ProductDetails" component={ProductDetails} options={{ headerTitle: '' }} />
+      <ProductsStack.Screen name="Catogeries" component={Catogeries} options={{ headerTitle: 'Catogeries' }} />
       <ProductsStack.Screen name="CartModal" component={CartModal} options={{ headerShown: false, presentation: 'modal' }} />
     </ProductsStack.Navigator>
   );
@@ -64,8 +68,8 @@ const styles = StyleSheet.create({
   countContainer: {
     position: 'absolute',
     zIndex: 1,
-    bottom: -5,
-    right: -10,
+    bottom: 10,
+    right: -13,
     width: 20,
     height: 20,
     borderRadius: 10,
